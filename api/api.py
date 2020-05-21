@@ -6,38 +6,16 @@ import json
 app = flask.Flask(__name__)
 
 
-initial_html = ' <form><input type="text" id="input-text" name="input-text"></form>\
-<h4 id="result"></h4>\
-<script src="https://code.jquery.com/jquery-3.5.1.js"\
-    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous">\
-</script>\
-<script>\
-let typingTimer;\
-let doneTypingInterval = 500;\
-let myInput = document.getElementById(\'input-text\');\
-myInput.addEventListener(\'keyup\', () => {\
-    clearTimeout(typingTimer);\
-    if (myInput.value) {\
-        typingTimer = setTimeout(doneTyping, doneTypingInterval);\
-    }\
-});\
-\
-function doneTyping () {\
-    console.log(\'done typing\');\
-    var text = $("#input-text").val();\
-    console.log(text);\
-    $.post(\'/analyze\',\
-        {"input-text": text},\
-        function(data) {\
-            $("#result").html(data["feedback"])\
-        }\
-    );\
-}\
-</script>'
+initial_html = '<embed type="text/html" src="embed" width="500" height="200">'
 
 @app.route('/', methods=['GET'])
 def root():
     return initial_html
+
+@app.route('/embed', methods=['GET'])
+def embed():
+    f = open('./embed.html')
+    return f.read()
 
 @app.route('/analyze', methods=['POST'])
 def analyze_text():
