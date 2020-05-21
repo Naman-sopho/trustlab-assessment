@@ -1,4 +1,4 @@
-<form><input type="text" id="input-text" name="input-text"></form>
+<form><input placeholder="Insert your comment here!!" type="text" id="input-text" name="input-text"></form>
 <h4 id="result"></h4>
 <script src="https://code.jquery.com/jquery-3.5.1.js"
     integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous">
@@ -15,14 +15,35 @@ myInput.addEventListener('keyup', () => {
 });
 
 function doneTyping () {
-    console.log('done typing');
     var text = $("#input-text").val();
-    console.log(text);
+    sendPostRequest(text, "#result");
+}
+
+function sendPositiveFeedback() {
+    var text = $("#comment").val();
+    sendPostRequest(text, "#comment-result");
+}
+
+function sendNegativeFeedback() {
+    var text = $("#comment").val();
+    sendPostRequest(text, "#comment-result");
+}
+
+function sendPostRequest(text, idToUpdate) {
     $.post('/analyze',
         {"input-text": text},
         function(data) {
-            $("#result").html(data["feedback"])
+            $(idToUpdate).html(data["feedback"]); 
         }
     );
 }
+
 </script>
+<br/>
+<br/>
+<h3>Example Comment:</h3>
+<p id="comment">I don't agree with you. I think you are stupid.</p>
+<h5>Feedback:</h5>
+<h6 id="comment-result"></h6>
+<button onclick="sendPositiveFeedback()">+</button>
+<button onclick="sendNegativeFeedback()">-</button>

@@ -5,8 +5,8 @@ import json
 
 app = flask.Flask(__name__)
 
-
 initial_html = '<embed type="text/html" src="embed" width="500" height="200">'
+
 global percentage
 percentage = 56
 
@@ -47,7 +47,7 @@ def analyze_text():
     else:
         feedback += 'Good to go.'
     
-    feedback_json = {"feedback": feedback}
+    feedback_json = {"feedback": feedback, "val": report}
     feedback_json = jsonify(feedback_json)
     return feedback_json
 
