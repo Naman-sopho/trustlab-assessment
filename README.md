@@ -6,19 +6,21 @@ The repository consists of an implementation of an API which could be used by so
 - Analyzing user feedback for comments: Another part of the embeddable HTML is a two-button system for reporting a comment on the platform. The API then responds with what it believes the comment's "hate speech score" is, then the developer can decided how to handle this particular case.
 
 #### API Usage (from a platform developer's perspective)
-The platform developer can use the HTML `embed` tag to get the benefits of the data-store in place through the API. Based on their design decisions the developer can either display the feedback string received as real-time feedback for the user or also use to analyze the comment before adding it to their platform.  
-The developer can also a combination of the user feedback received for a comment and the API's feeback (`val` key in the JSON response) to make a decision over the action to be taken against a comment.
+The platform developer can use the HTML `embed` tag to get the benefits of the data-store in place through the API. Based on their design decisions the developer can either display the feedback string received as real-time feedback for the user or also use it to analyze the comment before adding it to their platform.  
+The developer can also use a combination of the user feedback received for a comment and the API's feeback (`val` key in the JSON response) to make a decision over the action to be taken against a comment.  
+The developer can also use the `/analyze` endpoint directly to get the "hate speech" score of any text block in question and thus the API provides a great deal of flexibility
 
 ##### Endpoints
-- `/` : This endpoint returns the `embed` HTML, thus serves as home page for testing the API.
-- `/<int>` : This a test endpoint. The integer value sent through the request sets the percentage value of that the hypothetical model would return as the "hate speech score" for a comment. This can be used to test the various scenarios that might arise when deploying the API in the real world.
+- `/` : This endpoint returns the `embed` HTML, thus servses as home page for testing the API.
+- `/<int>` : This a test endpoint. The integer value sent through the request sets the percentage value that the hypothetical model would return as the "hate speech score" for a comment. This can be used to test the various scenarios that might arise when deploying the API in the real world.
 - `/embed` : This returns the HTML that can be embedded. This endpoint would be used by a platform developer while requesting for the embeddable HTML through the `embed` tag.
 - `/analyze` : This endpoint recieves the text submitted and calls the hypothetical model in place for a "hate speech score" for the particular string. And then returns JSON object of the form,
 
 ```python
 {
     "feeback": A string consisting of the percentage score and a suggestion to edit if neccessary for the user,
-    "value": An integer value for the percentage score. This could be used by a developer to make a decision over the action to be taken for a particular comment.
+    "value": An integer value for the percentage score. This could be used by a developer to make a decision 
+             over the action to be taken for a particular comment.
 }
 ```
 
@@ -32,7 +34,8 @@ Run the following command in the api directory,
 python3 api.py
 ```
 Then go to the address `127.0.0.1:5000` in the browser which should serve a page with a text area where a comment can be typed and the real time feedback would be displayed underneath. The page also consists of an example comment and two buttons `+` `-` to report if a comment is "good" or "bad". Clicking these buttons sends a request to the API and response received is displayed. However a developer can use the response obtained according to their design decisions i.e. one scenario could be to add the response to the comments database and remove the comment whenever its score reaches a certain threshold.  
-For testing purposes the `/<int>` endpoint can be used. By default it is assumed that the model responds with a `56%` hate speech score for the comment, sending a request to say `/86` would reload the page and change the value to `86%` thus different scenarios can be tested.
+For testing purposes the `/<int>` endpoint can be used. By default it is assumed that the model responds with a `56%` hate speech score for the comment, sending a request to say `/86` would reload the page and change the value to `86%` thus different scenarios can be tested.  
+> Since this a constant value in the backend we can test this by monitoring the `Network` tab thus ensuring that the results html text is actually updated in real time as the user types.
 
 #### Dependencies
 Python Packages: 
