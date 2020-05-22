@@ -1,11 +1,11 @@
 import flask
-from flask import request, jsonify
-import json
+from flask import request
+import utils
 
 
 app = flask.Flask(__name__)
 
-initial_html = '<embed type="text/html" src="embed" width="500" height="200">'
+initial_html = '<embed type="text/html" src="embed" width="600" height="500">'
 
 global percentage
 percentage = 56
@@ -21,6 +21,14 @@ def embed():
 
 @app.route('/<value>')
 def set_percentage(value):
+    """
+    Endpoint for testing different percentage values
+    """
+    try:
+        value = int(value)
+    except ValueError:
+        return embed()
+
     if value is not None:
         global percentage
         percentage = int(value)
@@ -30,25 +38,6 @@ def set_percentage(value):
 def analyze_text():
     input_text = request.form['input-text']
 
-    # call to text analyzer like BERT
-    # assuming model returns JSON
-    result = '{"report": "86"}'
-    result_json = json.loads(result)
-    report = int(result_json['report'])
-    
-    # following is just for testing purposes and proof of concept
-    report = percentage
-
-    feedback = str(report) + chr(37) + ' likely to be hate speech. '
-    if report > 70:
-        feedback += 'Please edit.'
-    elif report > 40:
-        feedback += 'Please consider editing before posting.'
-    else:
-        feedback += 'Good to go.'
-    
-    feedback_json = {"feedback": feedback, "val": report}
-    feedback_json = jsonify(feedback_json)
-    return feedback_json
+    return utils.get_model_score(input_text, percentage)
 
 app.run()
